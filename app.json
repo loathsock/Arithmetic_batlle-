@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "quick_math",
+    "slug": "quick_math",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
