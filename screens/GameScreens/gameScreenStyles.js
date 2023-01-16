@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/native'
 
  export const GameWrapper = styled.View`
   display: flex;
@@ -14,7 +14,7 @@ export const GridStyles = styled.View`
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: 684px;
+      height: 692px;
       justify-content: space-around;
       align-items: center; 
       background-color: #06ccc2; 
@@ -22,36 +22,38 @@ export const GridStyles = styled.View`
 `  
 export const PlayerTwoGrid = styled.View`
     width: 100%;
-     height: 50%;
+     height: 55%;
     display: flex;
     justify-content: space-around; 
     align-items: center;
-    background-color: #06ccc2;
+    background-color: #00c7eb;
     border: 3px;
-    `
+    transform: rotate(180deg); 
+       `
 export const PlayerOneGrid = styled.View`
    position: relative;
    width: 100%;
-   height: 50%;
+   height: 55%;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #06ccc2;
-    border: 3px;
+    background-color: #0dc8e9;
+    border: 3px ;
     
     `
 
  export const  Operation = styled.View`
+  display: flex;
+  justify-content: center;
+  align-items: center; 
   top: 25px;
-  width: 260px;
-  height: 80px;
-  background-color: #eecc0c;
+  width: 300px;
+  height: 74px;
+  background-color: #201f19d8;
   border-radius: 10px;
   border-width: 2px;
-  border-color: #5e5521;
+  border-color: #cfba44;
   margin-bottom: 35px;
-  z-index: 1;
-  // transform: rotate(180deg); 
 
   `  
   
@@ -65,6 +67,7 @@ export const ChoiceButtonContainer = styled.View`
 
 
 export const ChoiceButton = styled.TouchableOpacity`
+      display: flex;
       width: 80px;
       height: 60px;
       background-color: #ffff;
@@ -79,6 +82,7 @@ export const ChoiceButton = styled.TouchableOpacity`
 
 
   export const ScoreCounter = styled.View`
+   display: flex;
     width: 80px;
     height: 60px;
     background-color: #c888;
@@ -86,6 +90,11 @@ export const ChoiceButton = styled.TouchableOpacity`
     justify-content: center;
     border-radius: 6px;
     `
+
+export const NumberText = styled.Text`
+     font-size: 30px;
+     color: white;   
+     `
   
 
 // export const PlayersGameOverScreen = StyleSheet.create({

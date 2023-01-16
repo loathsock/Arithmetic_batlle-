@@ -19,8 +19,14 @@ export const operationEval = (leftHandSide, op, rightHandSide) => {
   return result;
 };
 
-export const getRandomArbitrary = (min, max) => {
-  return Math.floor(Math.random() * (max - min) + min);
+export const getRandomArbitrary = (min, max, correctOption) => {
+  let numArray = []
+  let element
+  for (let i = 0; i < 3; i++) {
+     element = Math.floor(Math.random() * (max - min) + min);  
+     numArray.push(element)
+  }
+  return {numArray, correctOption}
 };
 export const shuffleArray = (array) => {
   let currentIndex = array.length,

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/native'
 
 export const FooterContainer = styled.View`
  position: absolute;
@@ -12,8 +12,15 @@ export const FooterContainer = styled.View`
 
 export const LeaderShipBlock = styled.TouchableOpacity`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: 50%;
-  height: 100%; 
+  height: 70px; 
   background-color: ${props => props.color ?? 'blue'};
-
+  
+`
+export const Icon = styled.Image`
+      width: 40px;
+      height: 40px; 
+     //  background-color: ${props => props.color ?? 'blue'};
 `

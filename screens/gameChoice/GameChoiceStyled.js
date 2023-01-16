@@ -1,11 +1,11 @@
-import styled from 'styled-components'
+import styled from 'styled-components/native'
 
 export const GameWrapper = styled.View`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 344px; 
+  height: 356px; 
   border: 3px;
   background-color: #9e64e0;
 `

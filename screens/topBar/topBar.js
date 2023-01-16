@@ -6,9 +6,7 @@ import { StyledText } from '../StyledText/styledText'
 const TopBar = () => { 
   return (
     <NavWrapper>
-       <StyledText>
-           Hello World
-       </StyledText>
+      
     </NavWrapper>
   )
 }

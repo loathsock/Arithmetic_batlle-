@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components/native'
 
 
 export const NavWrapper = styled.View`
@@ -9,7 +9,7 @@ export const NavWrapper = styled.View`
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100px;
-    background-color: #80dd94;
+    height: 75px;
+    background-color: #2684f0;
     
 `
