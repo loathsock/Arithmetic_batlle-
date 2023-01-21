@@ -5,7 +5,7 @@ export const GameWrapper = styled.View`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 356px; 
+  height: 27.8%; 
   border: 3px;
   background-color: #9e64e0;
 `

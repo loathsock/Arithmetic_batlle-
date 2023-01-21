@@ -47,6 +47,22 @@ export const shuffleArray = (array) => {
   return array;
 };
 
+export function getDifferentNumberValues (correctAnswer) {
+  let n1 = Math.floor(Math.random() * 10);
+  let n2 = Math.floor(Math.random() * 10);
+  if(n1 == n2 || n1 == correctAnswer || n2 == correctAnswer ) {
+     n1 = Math.floor(Math.random() * 6) + correctAnswer 
+     n2 = Math.floor(Math.random() * 6) + correctAnswer  
+   
+    }
+    
+    
+    return {n1, n2}
+
+
+};
+
+
 export const correctAnswerForPlayerOne = (choice, correct) => {
   if (choice === correct) {
     return true;

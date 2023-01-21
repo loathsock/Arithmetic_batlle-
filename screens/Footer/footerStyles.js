@@ -1,12 +1,12 @@
 import styled from 'styled-components/native'
 
 export const FooterContainer = styled.View`
- position: absolute;
- bottom: -600px;
+  position: absolute;
+  bottom: 0;
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 40%; 
+  height: 39%; 
   background-color: #e7d9f8;
 `
 
@@ -15,7 +15,7 @@ export const LeaderShipBlock = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   width: 50%;
-  height: 70px; 
+  height: 60px; 
   background-color: ${props => props.color ?? 'blue'};
   
 `

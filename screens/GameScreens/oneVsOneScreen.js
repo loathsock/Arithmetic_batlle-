@@ -1,64 +1,74 @@
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native'
-import { GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText } from './gameScreenStyles'
-import React, {useState, useEffect} from 'react'
-import { randomizedOperationFuncs, randomizedOperationNumbers, operationEval, shuffleArray, getRandomArbitrary } from './gameLogic';
+import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native'
+import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText } from './gameScreenStyles'
+import React, {useState, useEffect, useRef} from 'react'
+import { randomizedOperationFuncs, randomizedOperationNumbers, operationEval, shuffleArray, getRandomArbitrary, getDifferentNumberValues } from './gameLogic';
+import { useSelector, useDispatch, Provider } from 'react-redux';
+import{incrementPlayerOne, decrementPlayerOne, decrementPlayerTwo, incrementPlayerTwo } from './../../redux/counter'
+import{ store } from './../../redux/store'
 
 
 
 
 
 const OneVsOneScreen = () => {
-  const [playerOneScore, setPlayerOneScore] = useState(0)
-  const [playerTwoScore, setPlayerTwoScore] = useState(0)
-  const [playerOneCount, setPlayerOneCount] = useState(0)
+  const [flip, setFlip] = useState(true)
+ 
   const numberReturnedFromFun = randomizedOperationNumbers()
+  const translation = useRef(new Animated.Value(0)).current;
+  const dispatch = useDispatch();
+  const {playerOneScore}  = useSelector((state) => state);
+  const {playerTwoScore}  = useSelector((state) => state);
+  const numberValues = getDifferentNumberValues()
+  const [playerOneCount, setPlayerOneCount] = useState(0) 
   const randomOperator = randomizedOperationFuncs()
   const correctAnswer = operationEval(numberReturnedFromFun.leftHandSideNumber, randomOperator, numberReturnedFromFun.rightHandSideNumber)
-  const arrayRandomChoices = [1, correctAnswer, 9]
+  const arrayRandomChoices = [numberValues.n1, correctAnswer, numberValues.n2]
   const shuffledRandomChoices = shuffleArray(arrayRandomChoices) 
-  
-  
-  console.log('update', playerOneScore );
+ 
+
+  console.log(numberValues.n1, ' this ');
+
+  const nextQAnimation = () =>
+    Animated.sequence([
+      Animated.timing(translation, {
+        toValue: 380,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translation, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
  
   const [correctOption, setCorrectOption] = useState()
    
-// // useEffect(() => {    
-// //   if(playerOneCount <= 0) {
-// //     setPlayerOneCount((playerOneCount) => playerOneCount = 0)
-// //   }
-// //   setPlayerOneCount(playerOneScore)
-// //   console.log(playerOneScore);
-// // }, [playerOneScore])
 
 
   
     const playerOneOnPress = (n, prev) => {
-      if(playerOneScore <= 0) {
-        setPlayerOneScore((previous) => previous = 0)
-      }
+     nextQAnimation()     
 
-      if(n === correctAnswer) {
-        setPlayerOneScore((prev) => prev + 1)
+      if(n == correctAnswer) {
+        dispatch(incrementPlayerOne())
       }
       if(n !== correctAnswer) {
-        setPlayerOneScore((prev) => prev -1)
+        dispatch(decrementPlayerOne())
       }
-      
-    // if(n === correctAnswer) {
-    //   setPlayerOneScore(playerOneScore + 1)
-    // } if(n!== correctAnswer) {
-    //   setPlayerOneScore(playerOneScore - 1)
-    // }
+  
   }
    
     
   const playerTwoOnPress = (n, counter) => {
-       // console.log(playerOneCount);
-      //console.log(counter);
-    if(n === correctAnswer) {
-      setPlayerTwoScore(playerTwoScore + 1)
-    } if(n!== correctAnswer) {
-      setPlayerTwoScore(playerTwoScore - 1)
+    nextQAnimation()
+ 
+    if(n == correctAnswer) {
+      dispatch(incrementPlayerTwo())
+    }
+    if(n !== correctAnswer) {
+      dispatch(decrementPlayerTwo())
     }
   }
 
@@ -66,11 +76,17 @@ const OneVsOneScreen = () => {
    
 
   return (
-    <View>
+    <Provider store={store}>
+
+    <Animated.View>
     <GridStyles>
 
-      <PlayerTwoGrid>
-      <Operation>
+      <PlayerTwoGrid
+        style={{
+          transform: [{rotate: '180deg'}, { translateX: translation}, ]
+        }}
+      >
+      <Operation >
                 <NumberText>
                     {numberReturnedFromFun.leftHandSideNumber} {randomOperator} {numberReturnedFromFun.rightHandSideNumber} 
                 </NumberText>
@@ -94,8 +110,11 @@ const OneVsOneScreen = () => {
     </PlayerTwoGrid>
 
     
-          <PlayerOneGrid>
-           <Operation>
+          <PlayerOneGrid style={{
+         
+         transform: [{ translateX: translation }],
+        }}>
+          <Operation >
                 <NumberText>
                     {numberReturnedFromFun.leftHandSideNumber} {randomOperator} {numberReturnedFromFun.rightHandSideNumber} 
                 </NumberText>
@@ -106,9 +125,8 @@ const OneVsOneScreen = () => {
                return  <ChoiceButton 
                 onPress= { () => {
                   playerOneOnPress(item, playerOneCount)
-                }
-                   
-                      }
+                }}
+
                 key={i}>
                            <NumberText>{item}</NumberText>
                     </ChoiceButton>  
@@ -116,14 +134,31 @@ const OneVsOneScreen = () => {
 
             </ChoiceButtonContainer>
   
-            <ScoreCounter>
-                <NumberText>{playerOneScore}</NumberText> 
-
-            </ScoreCounter>
+              <ScoreCounter>
+                    <NumberText>{playerOneScore}</NumberText> 
+              </ScoreCounter>       
           </PlayerOneGrid>
+     
+          
     </GridStyles>
-    </View>   
+  </Animated.View>   
+</Provider>
   )
 }
 
+
+
+
 export default OneVsOneScreen
+
+const styles = StyleSheet.create({
+  
+  wrapper: {
+    display:"flex", 
+    justifyContent: 'center',
+   width: "20%",
+   height: "20%",
+   backgroundColor: 'blue',
+
+  }
+});
