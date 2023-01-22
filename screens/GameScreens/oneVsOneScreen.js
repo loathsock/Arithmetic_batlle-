@@ -1,10 +1,11 @@
 import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native'
-import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText } from './gameScreenStyles'
+import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText, MidScreen } from './gameScreenStyles'
 import React, {useState, useEffect, useRef} from 'react'
 import { randomizedOperationFuncs, randomizedOperationNumbers, operationEval, shuffleArray, getRandomArbitrary, getDifferentNumberValues } from './gameLogic';
 import { useSelector, useDispatch, Provider } from 'react-redux';
 import{incrementPlayerOne, decrementPlayerOne, decrementPlayerTwo, incrementPlayerTwo } from './../../redux/counter'
 import{ store } from './../../redux/store'
+
 
 
 
@@ -18,12 +19,13 @@ const OneVsOneScreen = () => {
   const dispatch = useDispatch();
   const {playerOneScore}  = useSelector((state) => state);
   const {playerTwoScore}  = useSelector((state) => state);
-  const numberValues = getDifferentNumberValues()
   const [playerOneCount, setPlayerOneCount] = useState(0) 
   const randomOperator = randomizedOperationFuncs()
   const correctAnswer = operationEval(numberReturnedFromFun.leftHandSideNumber, randomOperator, numberReturnedFromFun.rightHandSideNumber)
+  const numberValues = getDifferentNumberValues(correctAnswer)
   const arrayRandomChoices = [numberValues.n1, correctAnswer, numberValues.n2]
   const shuffledRandomChoices = shuffleArray(arrayRandomChoices) 
+
  
 
   console.log(numberValues.n1, ' this ');
@@ -109,7 +111,9 @@ const OneVsOneScreen = () => {
             </ScoreCounter>
     </PlayerTwoGrid>
 
-    
+    <MidScreen>
+
+    </MidScreen>
           <PlayerOneGrid style={{
          
          transform: [{ translateX: translation }],

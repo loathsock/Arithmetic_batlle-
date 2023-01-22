@@ -6,7 +6,7 @@ import { store } from './../../redux/store'
 // import { Provider } from 'react-redux'
 // import { store } from '../../redux/store'
  import { useSelector, useDispatch } from 'react-redux';
-import { setToMainMenu, toggleState } from '../../redux/counter'
+import { setToMainMenu, toggleState, setInitialStatePlayerOne, setInitialStatePlayerTwo } from '../../redux/counter'
  
 
 const Footer = () => {
@@ -18,6 +18,8 @@ const Footer = () => {
          <LeaderShipBlock onPress={() => {
          //  setToggleGameState(!toggleGameState)
           dispatch(setToMainMenu())
+          dispatch(setInitialStatePlayerOne())
+          dispatch(setInitialStatePlayerTwo())
           }
           } color='#63c970'          
          >

@@ -96,12 +96,14 @@ export const NumberText = styled.Text`
           `
 
 
-export const midScreen = styled.View`
-          background-color: gray;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 4%;
+export const MidScreen = styled.View`
+         position: absolute;
+         top: 48%;
+         height: 24px;
+         width: 100%;
+         background-color: #e2cd54;
+         z-index: 1;
+        
 `
     
   

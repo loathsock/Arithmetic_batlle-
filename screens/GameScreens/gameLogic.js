@@ -48,13 +48,22 @@ export const shuffleArray = (array) => {
 };
 
 export function getDifferentNumberValues (correctAnswer) {
-  let n1 = Math.floor(Math.random() * 10);
-  let n2 = Math.floor(Math.random() * 10);
+  console.log(correctAnswer, ' is correct');
+  let n1 = Math.floor(Math.random() * 6) + correctAnswer
+  let n2 = Math.floor(Math.random() * 6) + correctAnswer
   if(n1 == n2 || n1 == correctAnswer || n2 == correctAnswer ) {
-     n1 = Math.floor(Math.random() * 6) + correctAnswer 
-     n2 = Math.floor(Math.random() * 6) + correctAnswer  
-   
-    }
+     n1 = Math.floor(Math.random() * 5) + correctAnswer 
+     n2 = Math.floor(Math.random() * 5) + correctAnswer   
+  }
+  if(n1 == correctAnswer || n2 == correctAnswer ) {
+    n1 = Math.floor(Math.random() * 5) + correctAnswer 
+    n2 = Math.floor(Math.random() * 5) + correctAnswer   
+    
+ }  
+
+  //  else {
+  //   getDifferentNumberValues(correctAnswer)
+  // }
     
     
     return {n1, n2}
