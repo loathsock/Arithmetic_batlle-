@@ -28,6 +28,24 @@ export const getRandomArbitrary = (min, max, correctOption) => {
   }
   return {numArray, correctOption}
 };
+
+export const getTwoRandomChoices = (correctOption) => {
+   let arrayOfAnswers = [correctOption]
+ 
+ 
+
+    let  wrongChoice = Math.floor(Math.random() * 10 );  
+     arrayOfAnswers.push(wrongChoice)
+    //  arrayOfAnswers.push(correctOption)
+  
+  return {arrayOfAnswers, correctOption}
+};
+
+
+
+
+
+
 export const shuffleArray = (array) => {
   let currentIndex = array.length,
     randomIndex;
@@ -48,7 +66,6 @@ export const shuffleArray = (array) => {
 };
 
 export function getDifferentNumberValues (correctAnswer) {
-  console.log(correctAnswer, ' is correct');
   let n1 = Math.floor(Math.random() * 6) + correctAnswer
   let n2 = Math.floor(Math.random() * 6) + correctAnswer
   if(n1 == n2 || n1 == correctAnswer || n2 == correctAnswer ) {

@@ -1,36 +1,100 @@
-import React, {useState, useEffect}from 'react'
+import React, {useState, useEffect, useRef}from 'react'
 import { Text } from 'react-native'
+import { randomizedOperationNumbers, randomizedOperationFuncs, operationEval, getTwoRandomChoices, shuffleArray } from './gameLogic';
 
 import { BlockStyles, TopGrid, BottomGrid, GridBlock, Timer, TimerIcon, StartGameIcon, NumberDisplay, TouchableGameIcon
- } from './speedMathStyles'
+, TimerText,
+ArithmeticOperation,
+CounterTxt,
+OperationText} from './speedMathStyles'
+
+// import { Stopwatch, Timer } from 'react-native-stopwatch-timer';
+
+import { useClock } from 'react-native-timer-hooks';
+import math from 'mathjs';
+import StopWatch from 'react-native-stopwatch-timer/lib/stopwatch';
+import { current } from '@reduxjs/toolkit';
+
 
 
 const SpeedMath = () => {
-    const [gameState, setGameState] = useState(false)
-    const [count, setCount] = useState(0)
-    let timeNow = new Date().getTime()
-  console.log(gameState);
-    const toggleState = () => {
+   console.log(StopWatch)
+   const [gameState, setGameState] = useState(false)
+   const [gameOver, setGameOver] = useState(false)
+   // const randomNumber = randomizedOperationNumbers()
+   // const randomOperator = randomizedOperationFuncs() 
+   const [playerScore, setPlayerScore] = useState(0)
+   const randomNumber = useRef(randomizedOperationNumbers())
+  const randomOperator = useRef(randomizedOperationFuncs()) 
+  // let correctA = operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber)
+  const correctA = useRef(operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber))
+  // const correctAnswer = useState(operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber)) 
+  //  const arrayAnswers = useRef(getTwoRandomChoices(correctAnswer.current))
+  // // //   const shuffleAnswersArray = useState(shuffleArray([correctAnswer, correctAnswer + Math.floor(Math.random() * 7)]))
+
+// const shuffleAnswersArray = useState(shuffleArray([correctA, Math.floor(Math.random() * 5)]))
+
+const [shuffleAnswersArray, setShuffleAnswersArray] = useState(shuffleArray([correctA.current, correctA.current +  Math.floor(Math.random() * 5)]))  
+   const [counter, start, pause, reset, isRunning] = useClock({
+      from: 0,
+      to: Infinity, 
+      ms: 35,
+      stopOnFinish: true,
+   });
+
+   
+   const checkCorrectAnswer = (currentItemValue, correctValue) => {
+      if(playerScore >= 35 ) {
+         setGameOver(true)
+         reset()
+         pause()
+      }
+      randomNumber.current = randomizedOperationNumbers()
+      randomOperator.current = randomizedOperationFuncs()
+       correctA.current =  operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber) 
+       let num = correctA.current + Math.floor(Math.random() * 6) !== correctA.current ?  correctA.current + Math.floor(Math.random() * 6) : correctA.current + Math.floor(Math.random() * 6)
+       if(num !== correctA) {
+          setShuffleAnswersArray( shuffleArray(          
+             [correctA.current,  num])
+          ) 
+       } 
+       if(num !== correctA) {
+         num = correctA.current + Math.floor(Math.random() * 6) 
+          if(num !== correctA){
+             setShuffleAnswersArray( shuffleArray(          
+                [correctA.current,  num])
+             ) 
+          }
+       }
+
+
+
+       if(currentItemValue == correctValue ) {
+
+         setPlayerScore(prev => prev + 1)
+         console.log(true);
+        }    
+      else {
+         setPlayerScore(prev => prev - 1)   
+         console.log(false);
+       }
+   }
+   
+   useEffect(() => {
+      start()
+    //   setCounterState((prev) => prev = counter)
+      // console.log(counterState);
+      
+   }, [])
+   
+   
+   const toggleState = () => {
+      //  start()
       setGameState(!gameState)
-    }
-
-   //  console.log(timeNow.toString().slice(11));
-
-   //  console.log(count);
-   //  console.log();
-   //  useEffect(() => {
-   //      setInterval(() => {
-   //       const t =  new Date().getTime() - timeNow
-   //       setCount(t.toString().slice(0, 2))
-   //         console.log(t.toString().slice(0, 2));
-   //      }, 1000);
-   //          // setCount((count) => count + 1 )
-   //  }, [])
-
-
-
-  return (
-   gameState ? 
+   }
+         
+         return (
+   gameState && !gameOver ? 
         <BlockStyles>
         <TopGrid>
              <Timer>
@@ -40,70 +104,76 @@ const SpeedMath = () => {
                         )
                 }
                     />
-             <Text>
-                  {count}
-    
-             </Text>
+             <TimerText>
+             {counter/ 10}  
+             </TimerText>
              </Timer>
-             {/* <TouchableGameIcon   onPress= {() => {
-                  toggleState()
-                }}>
-             <StartGameIcon
-                source={require('path=./../../assets/play.png')}
-              
-             />
 
+             <ArithmeticOperation>
+             <OperationText>
+                {randomNumber.current.leftHandSideNumber} {randomOperator.current} {randomNumber.current.rightHandSideNumber}
 
-             </TouchableGameIcon> */}
+             </OperationText>
+             </ArithmeticOperation>
+   
          </TopGrid>
+       <CounterTxt>
+              {playerScore}
+       </CounterTxt>
 
           <BottomGrid>
-                    <GridBlock>
-                       <NumberDisplay>
-                          5
-                       </NumberDisplay>
-                    </GridBlock>
-
-            <GridBlock>
-            <NumberDisplay>
-                         9
-                       </NumberDisplay>
-             </GridBlock>
-
+                 {shuffleAnswersArray.map((item, index) => {
+                  return  <GridBlock onPress={() => {
+                      checkCorrectAnswer(correctA.current, item)
+                  }} key={index}>
+                             <NumberDisplay>
+                                   {item}
+                             </NumberDisplay>
+                        </GridBlock>
+                 })}
        </BottomGrid>
-    </BlockStyles> : 
-
-<BlockStyles>
-<TopGrid>
-     <Timer>
-            <TimerIcon
-                source={require(
-                'path=./../../assets/timer.png'
-                )
-        }
+    </BlockStyles> : <>
+    {!gameState  ?   
+      <BlockStyles>
+         <TopGrid>
+            <TouchableGameIcon   onPress= {() => {
+                  toggleState()
+               }}>
+            <StartGameIcon
+               source={require('path=./../../assets/play.png')}
+               
             />
-     <Text>
-          {count}
-
-     </Text>
-     </Timer>
-     <TouchableGameIcon   onPress= {() => {
-          toggleState()
-        }}>
-     <StartGameIcon
-        source={require('path=./../../assets/play.png')}
-      
-     />
 
 
-     </TouchableGameIcon>
- </TopGrid>
+            </TouchableGameIcon>
+         </TopGrid>
 
 
-</BlockStyles>
+         </BlockStyles> : <>
+            {gameOver  &&  null  }
+         </>
+     }  
+            
+         
+    </>
+
 
 
   )
 }
 
 export default SpeedMath
+
+
+
+{/* <GridBlock>
+<NumberDisplay>
+   {correctAnswer.current}
+</NumberDisplay>
+</GridBlock>
+
+<GridBlock>
+<NumberDisplay>
+7
+</NumberDisplay>
+</GridBlock> */}
