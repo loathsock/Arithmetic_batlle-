@@ -6,92 +6,111 @@ import { BlockStyles, TopGrid, BottomGrid, GridBlock, Timer, TimerIcon, StartGam
 , TimerText,
 ArithmeticOperation,
 CounterTxt,
-OperationText} from './speedMathStyles'
+OperationText, FinishTimerDisplayWrapper, TimerView, RestartText, Restart, GameProgressBarWrapper, GameProgressBar} from './speedMathStyles'
 
 // import { Stopwatch, Timer } from 'react-native-stopwatch-timer';
 
 import { useClock } from 'react-native-timer-hooks';
 import math from 'mathjs';
-import StopWatch from 'react-native-stopwatch-timer/lib/stopwatch';
 import { current } from '@reduxjs/toolkit';
 
 
 
 const SpeedMath = () => {
-   console.log(StopWatch)
    const [gameState, setGameState] = useState(false)
    const [gameOver, setGameOver] = useState(false)
-   // const randomNumber = randomizedOperationNumbers()
-   // const randomOperator = randomizedOperationFuncs() 
-   const [playerScore, setPlayerScore] = useState(0)
+   const [finishTime, setFinishTime] = useState(0)
+   const [playerScoreYe, setPlayerScoreYe] = useState(0)
    const randomNumber = useRef(randomizedOperationNumbers())
-  const randomOperator = useRef(randomizedOperationFuncs()) 
-  // let correctA = operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber)
-  const correctA = useRef(operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber))
-  // const correctAnswer = useState(operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber)) 
-  //  const arrayAnswers = useRef(getTwoRandomChoices(correctAnswer.current))
-  // // //   const shuffleAnswersArray = useState(shuffleArray([correctAnswer, correctAnswer + Math.floor(Math.random() * 7)]))
+   const randomOperator = useRef(randomizedOperationFuncs())  
+   
+   console.log(playerScoreYe);
+   useEffect(() => {
+       setPlayerScoreYe(playerScoreYe)
 
-// const shuffleAnswersArray = useState(shuffleArray([correctA, Math.floor(Math.random() * 5)]))
+   }, [playerScoreYe])
+   
+
+  const correctA = useRef(operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber))
+
+  // console.log(playerScore.current * 10);
+ 
 
 const [shuffleAnswersArray, setShuffleAnswersArray] = useState(shuffleArray([correctA.current, correctA.current +  Math.floor(Math.random() * 5)]))  
    const [counter, start, pause, reset, isRunning] = useClock({
       from: 0,
       to: Infinity, 
-      ms: 35,
+      ms: 50,
       stopOnFinish: true,
    });
 
    
    const checkCorrectAnswer = (currentItemValue, correctValue) => {
-      if(playerScore >= 35 ) {
+     //  setPlayerScoreYe(playerScoreYe + 1)
+      if(currentItemValue == correctValue ) {               
+         setPlayerScoreYe(prev => prev + 1)
+         // console.log(playerScore.current); 
+          console.log(playerScoreYe + ' this is player score'); 
+      }  
+      if(currentItemValue !== correctValue ) {               
+         setPlayerScoreYe(prev => prev - 1)
+      }  
+
+      if(playerScoreYe > 10) {
+         setFinishTime(counter/10)
+         setGameState(false)
          setGameOver(true)
+         setPlayerScoreYe(prev => prev = 0) 
+
          reset()
          pause()
       }
+      
       randomNumber.current = randomizedOperationNumbers()
       randomOperator.current = randomizedOperationFuncs()
-       correctA.current =  operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber) 
-       let num = correctA.current + Math.floor(Math.random() * 6) !== correctA.current ?  correctA.current + Math.floor(Math.random() * 6) : correctA.current + Math.floor(Math.random() * 6)
-       if(num !== correctA) {
-          setShuffleAnswersArray( shuffleArray(          
-             [correctA.current,  num])
-          ) 
-       } 
-       if(num !== correctA) {
-         num = correctA.current + Math.floor(Math.random() * 6) 
-          if(num !== correctA){
-             setShuffleAnswersArray( shuffleArray(          
-                [correctA.current,  num])
-             ) 
-          }
-       }
-
-
-
-       if(currentItemValue == correctValue ) {
-
-         setPlayerScore(prev => prev + 1)
-         console.log(true);
-        }    
-      else {
-         setPlayerScore(prev => prev - 1)   
-         console.log(false);
-       }
-   }
-   
-   useEffect(() => {
-      start()
-    //   setCounterState((prev) => prev = counter)
-      // console.log(counterState);
-      
-   }, [])
-   
-   
+      if(randomOperator.current == '-' && randomNumber.current.rightHandSideNumber > randomNumber.current.leftHandSideNumber) {
+         randomNumber.current.leftHandSideNumber = randomNumber.current.rightHandSideNumber
+         randomNumber.current.rightHandSideNumber = randomNumber.current.leftHandSideNumber
+       //   console.log('this is true');
+         correctA.current =  operationEval(randomNumber.current.rightHandSideNumber, randomOperator.current, randomNumber.current.leftHandSideNumber) 
+         let num = correctA.current + Math.floor(Math.random() * 9) !== correctA.current ?  correctA.current + Math.floor(Math.random() * 9) : correctA.current + Math.floor(Math.random() * 9)
+         if(num !== correctA) {
+            setShuffleAnswersArray( shuffleArray(          
+               [correctA.current,  num])
+            ) 
+         } 
+         }
+         else {          
+            correctA.current =  operationEval(randomNumber.current.leftHandSideNumber, randomOperator.current, randomNumber.current.rightHandSideNumber) 
+            let num = correctA.current + Math.floor(Math.random() * 9) !== correctA.current ?  correctA.current + Math.floor(Math.random() * 9) : correctA.current + Math.floor(Math.random() * 9)
+                     
+            if(num !== correctA) {
+               setShuffleAnswersArray( shuffleArray(          
+                  [correctA.current,  num])
+                  ) 
+               }                             
+               }
+                  
+               
+            }
+       
    const toggleState = () => {
-      //  start()
+        start()
       setGameState(!gameState)
+      setGameOver(false)
+      start()
    }
+
+
+const gameReset = () => {
+   //  start()
+   setGameState(!gameState)
+   setFinishTime(0)
+   start() 
+   setPlayerScoreYe(prev => prev = 0) 
+
+}
+
          
          return (
    gameState && !gameOver ? 
@@ -117,9 +136,12 @@ const [shuffleAnswersArray, setShuffleAnswersArray] = useState(shuffleArray([cor
              </ArithmeticOperation>
    
          </TopGrid>
-       <CounterTxt>
-              {playerScore}
-       </CounterTxt>
+
+         <GameProgressBarWrapper>
+             <GameProgressBar width={`${playerScoreYe * 10}%`}>
+
+             </GameProgressBar>
+         </GameProgressBarWrapper>
 
           <BottomGrid>
                  {shuffleAnswersArray.map((item, index) => {
@@ -150,30 +172,37 @@ const [shuffleAnswersArray, setShuffleAnswersArray] = useState(shuffleArray([cor
 
 
          </BlockStyles> : <>
-            {gameOver  &&  null  }
-         </>
-     }  
+            {gameOver  && 
             
-         
+            <BlockStyles>
+            <FinishTimerDisplayWrapper>
+          
+            <TimerView>
+                    <TimerIcon
+                        source={require(
+                        'path=./../../assets/timer.png'
+                        )
+                }
+                    />
+             <TimerText>
+             {finishTime}  
+             </TimerText>
+             </TimerView>
+             <Restart onPress={() => {
+               gameReset()
+             }}>
+               <RestartText>
+                 Restart
+               </RestartText>
+
+             </Restart>
+            </FinishTimerDisplayWrapper>
+            </BlockStyles> }
+         </>
+     }         
     </>
-
-
-
   )
 }
 
 export default SpeedMath
 
-
-
-{/* <GridBlock>
-<NumberDisplay>
-   {correctAnswer.current}
-</NumberDisplay>
-</GridBlock>
-
-<GridBlock>
-<NumberDisplay>
-7
-</NumberDisplay>
-</GridBlock> */}

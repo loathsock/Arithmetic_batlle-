@@ -1,9 +1,9 @@
 import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native'
-import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText, MidScreen } from './gameScreenStyles'
+import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText, MidScreen, PlayerWins } from './gameScreenStyles'
 import React, {useState, useEffect, useRef} from 'react'
 import { randomizedOperationFuncs, randomizedOperationNumbers, operationEval, shuffleArray, getRandomArbitrary, getDifferentNumberValues } from './gameLogic';
 import { useSelector, useDispatch, Provider } from 'react-redux';
-import{incrementPlayerOne, decrementPlayerOne, decrementPlayerTwo, incrementPlayerTwo } from './../../redux/counter'
+import{incrementPlayerOne, decrementPlayerOne, decrementPlayerTwo, incrementPlayerTwo, setInitialStatePlayerOne, setInitialStatePlayerTwo } from './../../redux/counter'
 import{ store } from './../../redux/store'
 
 
@@ -12,23 +12,37 @@ import{ store } from './../../redux/store'
 
 
 const OneVsOneScreen = () => {
+  const [playerOneWins, setPlayerOneWins] = useState(false)
+  const [playerTwoWins, setPlayerTwoWins] = useState(false)
   const [flip, setFlip] = useState(true)
- 
+  const [gameOver, setGameOver] = useState(false)
   const numberReturnedFromFun = randomizedOperationNumbers()
   const translation = useRef(new Animated.Value(0)).current;
   const dispatch = useDispatch();
   const {playerOneScore}  = useSelector((state) => state);
   const {playerTwoScore}  = useSelector((state) => state);
   const [playerOneCount, setPlayerOneCount] = useState(0) 
-  const randomOperator = randomizedOperationFuncs()
+  const randomOperator = randomizedOperationFuncs() 
   const correctAnswer = operationEval(numberReturnedFromFun.leftHandSideNumber, randomOperator, numberReturnedFromFun.rightHandSideNumber)
   const numberValues = getDifferentNumberValues(correctAnswer)
   const arrayRandomChoices = [numberValues.n1, correctAnswer, numberValues.n2]
   const shuffledRandomChoices = shuffleArray(arrayRandomChoices) 
 
- 
 
-  console.log(numberValues.n1, ' this ');
+  useEffect(() => {
+     // console.log('this is updating');
+       if (playerOneScore < 0 || playerTwoScore < 0 ) {
+        dispatch(setInitialStatePlayerOne())
+        dispatch(setInitialStatePlayerTwo())
+       }
+     if(playerOneScore > 1) {
+        setPlayerOneWins(true)
+     }
+     if(playerTwoScore > 1) {
+      setPlayerTwoWins(true) 
+   }
+  }, [playerOneScore, playerOneScore])
+  
 
   const nextQAnimation = () =>
     Animated.sequence([
@@ -65,7 +79,6 @@ const OneVsOneScreen = () => {
     
   const playerTwoOnPress = (n, counter) => {
     nextQAnimation()
- 
     if(n == correctAnswer) {
       dispatch(incrementPlayerTwo())
     }
@@ -74,13 +87,13 @@ const OneVsOneScreen = () => {
     }
   }
 
- 
    
 
   return (
     <Provider store={store}>
 
     <Animated.View>
+      {!gameOver  ? <>
     <GridStyles>
 
       <PlayerTwoGrid
@@ -97,7 +110,7 @@ const OneVsOneScreen = () => {
               {shuffledRandomChoices.map((item, i) => {
     
                return  <ChoiceButton 
-                onPress= { () =>  playerTwoOnPress(item, playerOneScore)}
+                onPressIn= { () =>  playerTwoOnPress(item, playerOneScore)}
                 key={i}>
                            <NumberText>{item}</NumberText>
                     </ChoiceButton>
@@ -127,7 +140,7 @@ const OneVsOneScreen = () => {
               {shuffledRandomChoices.map((item, i) => {
     
                return  <ChoiceButton 
-                onPress= { () => {
+                onPressIn= { () => {
                   playerOneOnPress(item, playerOneCount)
                 }}
 
@@ -145,6 +158,10 @@ const OneVsOneScreen = () => {
      
           
     </GridStyles>
+      </>  : <PlayerWins>
+                 
+      </PlayerWins>
+      }
   </Animated.View>   
 </Provider>
   )
