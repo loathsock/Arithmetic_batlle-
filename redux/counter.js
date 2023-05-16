@@ -22,8 +22,11 @@ export const counterSlice = createSlice({
     decrementPlayerTwo: (state) => {
       state.playerTwoScore -= 1
     }, 
-    setInitialState: (state) => {
+    setInitialStatePlayerOne: (state) => {
       state.playerOneScore = 0 
+    }, 
+    setInitialStatePlayerTwo: (state) => {
+      state.playerTwoScore = 0 
     }, 
     toggleState: (state) => {
       state.gameState = true
@@ -59,5 +62,5 @@ export const counterSlice = createSlice({
 
 
 
-export const {incrementPlayerOne, decrementPlayerOne, incrementPlayerTwo, decrementPlayerTwo, setInitialState, toggleState, setOneVersus, setSpeedMath, setToMainMenu} = counterSlice.actions  
+export const {incrementPlayerOne, decrementPlayerOne, incrementPlayerTwo, decrementPlayerTwo, setInitialState, toggleState, setOneVersus, setSpeedMath, setToMainMenu, setInitialStatePlayerOne, setInitialStatePlayerTwo} = counterSlice.actions  
  // export const {toggleState} = toggleGameState.actions   

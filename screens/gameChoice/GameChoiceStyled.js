@@ -14,13 +14,14 @@ export const ImageIconContainer = styled.Image`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80px;
-  height: 80px; 
+  width: 50px;
+  height: 50px; 
   `
 
 export const ImagePressAble  = styled.TouchableOpacity`
-  width: 50px;
-  height: 50px; 
+  width: 70px;
+  height: 70px; 
+
 `
 export const GameContainer  = styled.View`
   display: flex;

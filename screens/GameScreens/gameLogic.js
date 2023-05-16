@@ -1,11 +1,31 @@
 import { evaluate } from "mathjs";
 
-export const randomizedOperationNumbers = () => {
-  const leftHandSideNumber = Math.floor(Math.random() * 10) + 1;
-  const rightHandSideNumber = Math.floor(Math.random() * 10) + 1;
+export const randomizedOperationNumbers = (op) => {
+  let leftHandSideNumber = Math.floor(Math.random() * 10) + 1;
+  let rightHandSideNumber = Math.floor(Math.random() * 10) + 1;
+  if(op == '-' && leftHandSideNumber < rightHandSideNumber) {
+      leftHandSideNumber = rightHandSideNumber 
+      rightHandSideNumber = leftHandSideNumber 
+  }
 
   return { leftHandSideNumber, rightHandSideNumber };
 };
+
+export const randomizedEquation = () => {
+  let leftHandSideNumber = Math.floor(Math.random() * 10) + 1;
+  let rightHandSideNumber = Math.floor(Math.random() * 10) + 1;
+  const operations = ["+", "-", "*"];
+  const rand = Math.floor(Math.random() * operations.length);
+  const randomOperation = operations[rand];
+  if(randomOperation == '-' && leftHandSideNumber < rightHandSideNumber) {
+    console.log('this happened');
+    leftHandSideNumber = rightHandSideNumber 
+    rightHandSideNumber = leftHandSideNumber
+  }
+ 
+  return { leftHandSideNumber, rightHandSideNumber, randomOperation };
+};
+
 
 export function randomizedOperationFuncs() {
   const operations = ["+", "-", "*"];
@@ -15,7 +35,7 @@ export function randomizedOperationFuncs() {
 }
 
 export const operationEval = (leftHandSide, op, rightHandSide) => {
-  const result = evaluate(`${leftHandSide} ${op} ${rightHandSide}`);
+     const result = evaluate(`${leftHandSide} ${op} ${rightHandSide}`);
   return result;
 };
 
@@ -65,27 +85,38 @@ export const shuffleArray = (array) => {
   return array;
 };
 
-export function getDifferentNumberValues (correctAnswer) {
-  let n1 = Math.floor(Math.random() * 6) + correctAnswer
-  let n2 = Math.floor(Math.random() * 6) + correctAnswer
-  if(n1 == n2 || n1 == correctAnswer || n2 == correctAnswer ) {
-     n1 = Math.floor(Math.random() * 5) + correctAnswer 
-     n2 = Math.floor(Math.random() * 5) + correctAnswer   
-  }
-  if(n1 == correctAnswer || n2 == correctAnswer ) {
-    n1 = Math.floor(Math.random() * 5) + correctAnswer 
-    n2 = Math.floor(Math.random() * 5) + correctAnswer   
-    
- }  
-
-  //  else {
-  //   getDifferentNumberValues(correctAnswer)
-  // }
-    
-    
+export const getDifferentNumberValues =  (correctAnswer) => {
+  let n1 = Math.floor(Math.random() * 8) + correctAnswer   
+  let n2 = Math.floor(Math.random() * 8) + correctAnswer   
+  if(n1 !== n2 && correctAnswer !== n1 && correctAnswer !== n2) {
     return {n1, n2}
+  }  
 
+  if(n1 == n2 && n1 !== correctAnswer && n2 != correctAnswer) {
+     n1 = Math.floor(Math.random() * 8) + correctAnswer   
+     n2 = Math.floor(Math.random() * 8) + correctAnswer  
+     return {n1, n2}
+  }
 
+  if(n1 == correctAnswer && n1 !== n2 && n2 != correctAnswer) {
+    n1 = Math.floor(Math.random() * 8) + correctAnswer   
+    return {n1, n2}
+ }
+ if(n2 == correctAnswer && n1 !== correctAnswer && n2 != n1) {
+  n2 = Math.floor(Math.random() * 8) + correctAnswer   
+  n1 = Math.floor(Math.random() * 8) + correctAnswer   
+  return {n1, n2}
+  
+}
+
+ else {
+  return {n1, n2}
+ }
+  
+ 
+//  return {n1, n2}
+   //  getDifferentNumberValues(correctAnswer)
+  
 };
 
 

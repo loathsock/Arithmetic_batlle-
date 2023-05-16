@@ -1,5 +1,5 @@
-import { View, StyleSheet, Animated, TouchableOpacity } from 'react-native'
-import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText, MidScreen, PlayerWins } from './gameScreenStyles'
+import { View, StyleSheet, Animated, TouchableOpacity, Text } from 'react-native'
+import {ViewExp, GridStyles, PlayerOneGrid, PlayerTwoGrid, Operation, ChoiceButtonContainer, ChoiceButton, ScoreCounter, NumberText, MidScreen, PlayerWins, PlayerOneWins, PlayerWinsText, RestartButton, PlayerTwoWins  } from './gameScreenStyles'
 import React, {useState, useEffect, useRef} from 'react'
 import { randomizedOperationFuncs, randomizedOperationNumbers, operationEval, shuffleArray, getRandomArbitrary, getDifferentNumberValues } from './gameLogic';
 import { useSelector, useDispatch, Provider } from 'react-redux';
@@ -16,32 +16,82 @@ const OneVsOneScreen = () => {
   const [playerTwoWins, setPlayerTwoWins] = useState(false)
   const [flip, setFlip] = useState(true)
   const [gameOver, setGameOver] = useState(false)
-  const numberReturnedFromFun = randomizedOperationNumbers()
   const translation = useRef(new Animated.Value(0)).current;
+  const animatedValue = useRef(new Animated.Value(0)).current;
   const dispatch = useDispatch();
   const {playerOneScore}  = useSelector((state) => state);
   const {playerTwoScore}  = useSelector((state) => state);
   const [playerOneCount, setPlayerOneCount] = useState(0) 
   const randomOperator = randomizedOperationFuncs() 
+  const numberReturnedFromFun = randomizedOperationNumbers(randomOperator)
+  const [isCounterUpdatingIncorrect, setIsCounterUpdatingIncorrect] = useState(false)
+  const [isCounterUpdatingCorrect, setIsCounterUpdatingCorrect] = useState(false)
+
+
+  
+  // let ranOperator = randomOperator === '*' ? ranOperator = "***" : ranOperator = randomOperator
+
+  // console.log(ranOperator);
+  
   const correctAnswer = operationEval(numberReturnedFromFun.leftHandSideNumber, randomOperator, numberReturnedFromFun.rightHandSideNumber)
   const numberValues = getDifferentNumberValues(correctAnswer)
   const arrayRandomChoices = [numberValues.n1, correctAnswer, numberValues.n2]
   const shuffledRandomChoices = shuffleArray(arrayRandomChoices) 
+  
+  
+  
+  const COLOR_CORRECT = animatedValue.interpolate({
+     inputRange: [0, 0.2, 0.8, 1],
+     outputRange: isCounterUpdatingCorrect ? ["#c888", "red", "red", "#c888"]  : ["#c888", "green", "green", "#c888"]
+  });  
+  
+  
+  const changeBackgroundOnIncorrect = () => {
+     setIsCounterUpdatingIncorrect(!isCounterUpdatingIncorrect)
+    Animated.timing(animatedValue, {
+      toValue: isCounterUpdatingIncorrect? 0 : 1,
+      duration: 700, 
+      useNativeDriver: false
+    }).start();
+    //  setIsCounterUpdatingIncorrect(false)
+  };  
+  
+  const changeBackgroundOnCorrect = () => {
+    setIsCounterUpdatingIncorrect(!isCounterUpdatingCorrect)
+   Animated.timing(animatedValue, {
+     toValue: isCounterUpdatingCorrect? 0 : 1,
+     duration: 700, 
+     useNativeDriver: false
+   }).start();
+    // setIsCounterUpdatingCorrect(false)
+ };  
+  
+  const COLOR_INCORRECT = animatedValue.interpolate({
+    inputRange: [0, 0.2, 0.8, 1],
+    outputRange: ["#c888", "red", "red", "#c888"],
+  }); 
 
+
+
+
+  
 
   useEffect(() => {
+     
      // console.log('this is updating');
        if (playerOneScore < 0 || playerTwoScore < 0 ) {
         dispatch(setInitialStatePlayerOne())
         dispatch(setInitialStatePlayerTwo())
        }
-     if(playerOneScore > 1) {
+     if(playerOneScore >= 5) {
+        setGameOver(true)
         setPlayerOneWins(true)
      }
-     if(playerTwoScore > 1) {
+     if(playerTwoScore >= 5) {
+      setGameOver(true)
       setPlayerTwoWins(true) 
    }
-  }, [playerOneScore, playerOneScore])
+  }, [playerOneScore, playerTwoScore])
   
 
   const nextQAnimation = () =>
@@ -58,6 +108,14 @@ const OneVsOneScreen = () => {
       }),
     ]).start();
 
+    const updateScoreAnimation = () => {    
+      Animated.timing(updateScoreCount, {
+        toValue: 380,
+        duration: 50,
+        useNativeDriver: true,
+      }).start();
+  }
+    
  
   const [correctOption, setCorrectOption] = useState()
    
@@ -69,16 +127,18 @@ const OneVsOneScreen = () => {
 
       if(n == correctAnswer) {
         dispatch(incrementPlayerOne())
+        changeBackgroundOnCorrect()
       }
       if(n !== correctAnswer) {
+       changeBackgroundOnIncorrect()
         dispatch(decrementPlayerOne())
       }
-  
   }
    
     
   const playerTwoOnPress = (n, counter) => {
     nextQAnimation()
+
     if(n == correctAnswer) {
       dispatch(incrementPlayerTwo())
     }
@@ -87,6 +147,14 @@ const OneVsOneScreen = () => {
     }
   }
 
+
+  const restartGame = () => {  
+    setGameOver(false)
+    setPlayerOneWins(false)
+    setPlayerTwoWins(false)
+    dispatch(setInitialStatePlayerOne())
+    dispatch(setInitialStatePlayerTwo())
+  }
    
 
   return (
@@ -151,16 +219,54 @@ const OneVsOneScreen = () => {
 
             </ChoiceButtonContainer>
   
-              <ScoreCounter>
+              <ScoreCounter 
+              style={{   
+                  backgroundColor: COLOR_CORRECT,            
+              }}
+              
+              >  
                     <NumberText>{playerOneScore}</NumberText> 
               </ScoreCounter>       
           </PlayerOneGrid>
      
           
     </GridStyles>
-      </>  : <PlayerWins>
-                 
-      </PlayerWins>
+      </>  : <>
+        {playerTwoWins ?  <PlayerWins>
+        <PlayerOneWins>
+          
+                         <PlayerWinsText>
+                           You Win
+                         </PlayerWinsText>
+                         <RestartButton onPressIn={restartGame}>
+                         <Text style={{fontSize: 20, color: "white"}}>
+                             Restart
+                         </Text>
+                             
+                         </RestartButton>
+        </PlayerOneWins>
+                 </PlayerWins>
+                 : <>
+                  {playerOneWins && <PlayerWins>
+
+                    <PlayerTwoWins>
+                       <PlayerWinsText>
+                           You Win 
+                       </PlayerWinsText>
+
+                         <RestartButton onPress={restartGame}>
+                         <Text style={{fontSize: 28, color: "white"}}>
+                             Restart
+                         </Text>
+                             
+                         </RestartButton>
+                    </PlayerTwoWins>
+                 </PlayerWins>
+                 } 
+                 </>}
+      </>
+        
+      
       }
   </Animated.View>   
 </Provider>
@@ -180,6 +286,9 @@ const styles = StyleSheet.create({
    width: "20%",
    height: "20%",
    backgroundColor: 'blue',
-
+  }, 
+  counter: {
+    width: 150,
+    height: 50
   }
 });

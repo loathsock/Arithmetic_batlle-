@@ -74,10 +74,10 @@ export const ChoiceButton = styled.TouchableOpacity`
       background-color: #000;
 ` 
 
-  export const ScoreCounter = styled.View`
+  export const ScoreCounter = styled(Animated.View)`
    display: flex;
     width: 80px;
-    height: 60px;
+    height: 60px; 
     background-color: #c888;
     align-items: center;
     justify-content: center;
@@ -107,16 +107,55 @@ export const MidScreen = styled.View`
 `
     
 export const PlayerWins = styled.View`
+         display: flex;
+         justify-content: flex-start;
+         align-items: center;
          width: 100%;
          height: 100%;
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         background-color: #ffbebe;
-        
+         background-color: #2584f0;     
 `
    
+export const PlayerOneWins = styled.View`
+           position: absolute;
+           bottom: 70%;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           width: 50%;
+           height: 30%;
+           transform: rotate(180deg);
+
+`
+
+export const PlayerTwoWins = styled.View`
+           position: absolute;
+           bottom: 33%;
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           width: 50%;
+           height: 50%;
+
+
+`
+export const PlayerWinsText = styled.Text`
+            color: #ffffff;
+             font-size: 38px;
+`
   
+export const RestartButton = styled.TouchableOpacity`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      bottom: 70%;
+      width: 140px;
+      height: 60px;
+      border-radius: 10px;
+      background-color: hsl(214, 82%, 22%);
+      z-index: 1;
+`
+
   
   /* transform: translateX(${
 props => props.flip == true ? '50 px' : props.trans + '90 px' */

@@ -158,6 +158,9 @@ export const GameProgressBarWrapper = styled.View`
       z-index: 1;
 `
 
+
+
+
 export const GameProgressBar = styled.View`
 
       width: ${props => props.width ?? '0%'};

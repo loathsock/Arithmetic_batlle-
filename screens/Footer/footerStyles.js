@@ -16,7 +16,7 @@ export const LeaderShipBlock = styled.TouchableOpacity`
   align-items: center;
   width: 50%;
   height: 60px; 
-  background-color: ${props => props.color ?? 'blue'};
+  background-color: ${props => '#0b88fd'?? 'blue'};
   
 `
 export const Icon = styled.Image`

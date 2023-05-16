@@ -125,12 +125,12 @@ const styles = StyleSheet.create({
         paddingTop: 50,
       },
       tinyLogo: {
-        width: 50,
-        height: 50,
+        width: 70,
+        height: 100,
       },
       logo: {
-        width: 66,
-        height: 58,
+        width: 70,
+        height: 100,
       },
 });
 
